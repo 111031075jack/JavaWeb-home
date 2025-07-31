@@ -23,7 +23,7 @@
 					<thead>
 						<tr>
 							<td>id</td><td>username</td><td>hash</td><td>salt</td><td>priority</td>
-							<td>delete</td>
+							<td>delete</td><td>change password</td>
 						</tr>
 					</thead>				
 					<tbody>
@@ -40,6 +40,13 @@
 										if(session.getAttribute("priority") != null &&
 											Integer.parseInt(session.getAttribute("priority").toString()) == 1){
 											out.println("<a class = 'button-error pure-button' href='/JavaWeb/user/delete?id=" + user.getId() + "'>刪除</a>");
+										}
+									%>
+								</td>
+								<td>
+									<%
+										if(user.getUsername().equals(session.getAttribute("username").toString())){
+										out.println("<a class = 'button-success pure-button' href='/JavaWeb/user/change/password?id=" + user.getId() + "'>修改密碼</a>");
 										}
 									%>
 								</td>
