@@ -4,11 +4,12 @@ import java.io.IOException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebFilter("/user/change/password")
+@WebServlet("/user/change/password")
 public class ChangePasswordServlet extends HttpServlet {
 
 	@Override
