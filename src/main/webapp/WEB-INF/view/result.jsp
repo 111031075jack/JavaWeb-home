@@ -16,7 +16,6 @@
 			<fieldset>
 				<legend>結果頁面</legend>
 				結果: <%=request.getAttribute("message") %><p />
-				<button type="submit" class="pure-button pure-button-primary">傳送</button>
 			</fieldset>
 		</div>	
 	</body>

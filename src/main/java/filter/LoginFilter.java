@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 // 有登入才放行的過濾器
 //@WebFilter(urlPatterns = {"/user", "/user/delete", "/user/change/password"})
-@WebFilter(urlPatterns = {"/user/*"})
+@WebFilter(urlPatterns = {"/user/*", "/japanese/class/level", "/beverage"})
 public class LoginFilter extends HttpFilter {
 
 	@Override
@@ -22,7 +22,12 @@ public class LoginFilter extends HttpFilter {
 		// 判斷是否有登入 ?
 		HttpSession session = request.getSession(false);
 		if(session == null || session.getAttribute("username") == null) {
-			request.setAttribute("message", "請先登入");
+			// 記住 requestURI
+			String requestURI = request.getRequestURI();
+			session = request.getSession();
+			session.setAttribute("requestURI", requestURI);
+			
+			request.setAttribute("message", requestURI +  "網址需要登入, 請先登入");
 			request.getRequestDispatcher("/WEB-INF/view/result.jsp").forward(request, response);
 			return;
 		}
