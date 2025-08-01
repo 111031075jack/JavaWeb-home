@@ -17,9 +17,6 @@
 				<legend>結果頁面</legend>
 				結果: <%=request.getAttribute("message") %><p />
 				<button type="submit" class="pure-button pure-button-primary">傳送</button>
-				<a href="/JavaWeb/login" class="pure-button pure-button-primary">返回登入頁</a>
-				<a href="/JavaWeb/register" class="pure-button pure-button-primary">註冊頁</a>
-				<a href="/JavaWeb/user" class="pure-button pure-button-primary">使用者列表</a>
 			</fieldset>
 		</div>	
 	</body>
