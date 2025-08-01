@@ -14,7 +14,8 @@
 		<link rel="stylesheet" href="/JavaWeb/css/buttons.css">
 	</head>
 	<body style="padding: 20px">
-		<h2>Hi <%=session.getAttribute("username")%>您好 !</h2>
+		<!-- menu -->
+		<%@include file="/WEB-INF/view/menu.jspf" %>
 		<!-- 使用者頁面表單 -->
 		<div class="pure-form">
 			<fieldset>
