@@ -26,7 +26,7 @@ public class DroneOrderServiceImpl implements DroneOrderService {
 	@Override
 	public List<DroneOrder> findAll() {
 		
-		return findAll();
+		return findAll("order_id", true);
 	}
 
 }
