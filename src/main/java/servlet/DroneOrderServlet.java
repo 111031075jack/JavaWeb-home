@@ -1,4 +1,4 @@
-package service.impl;
+package servlet;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.DroneOrder;
 import service.DroneOrderService;
+import service.impl.DroneOrderServiceImpl;
 
 @WebServlet("/drone/order")
 public class DroneOrderServlet extends HttpServlet {
@@ -29,6 +30,7 @@ public class DroneOrderServlet extends HttpServlet {
 		asc = (asc == null) ? "true" : asc;
 		// 取得訂單資料
 		List<DroneOrder> droneOrders = service.findAll(orderByName, Boolean.parseBoolean(asc));
+		
 		req.setAttribute("droneOrders", droneOrders);
 		// 重導到 /WEB-INF/view/drone_order.jsp
 		req.getRequestDispatcher("/WEB-INF/view/drone_order.jsp").forward(req, resp);
