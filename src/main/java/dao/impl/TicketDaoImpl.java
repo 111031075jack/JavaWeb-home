@@ -110,7 +110,7 @@ public class TicketDaoImpl extends BaseDao implements TicketDao {
 
 	@Override
 	public void deleteTicket(int id) {
-String sql = "delete from ticket where id = ?";
+		String sql = "delete from ticket where id = ?";
 		
 		try(PreparedStatement pstmt = getConnection().prepareStatement(sql)){
 			
