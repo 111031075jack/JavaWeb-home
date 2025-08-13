@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.ApiResponse;
 import model.Ticket;
 import service.TicketService;
 import service.impl.TicketServiceImpl;
@@ -40,7 +41,8 @@ public class RestTicketServlet extends HttpServlet {
 			
 			List<Ticket> tickets = service.findAllTickets();
 			// 集合轉 json 陣列
-			resp.getWriter().println(gson.toJson(tickets));
+			ApiResponse<List<Ticket>> apiResponse = new ApiResponse<>(true, tickets, "");
+			resp.getWriter().println(gson.toJson(apiResponse));
 			
 		}else { // 單筆查詢
 			System.out.println("單筆查詢");
@@ -50,17 +52,24 @@ public class RestTicketServlet extends HttpServlet {
 				
 				Ticket ticket = service.getTicket(id);
 				// 物件轉 json
-				resp.getWriter().println(gson.toJson(ticket));
+				ApiResponse<Ticket> apiResponse = new ApiResponse<>(true, ticket, "");
+				resp.getWriter().println(gson.toJson(apiResponse));
 				
 			}catch (NumberFormatException e) {
-				System.out.println("未輸入 id 值");
+				ApiResponse<Ticket> apiResponse = new ApiResponse<Ticket>(false, null, "未輸入 id 值");
+				resp.getWriter().println(gson.toJson(apiResponse));
+				
+				//System.out.println("未輸入 id 值");
 				// 回應一個 json 格式的錯誤資訊
 				resp.getWriter().println("{\"message\": \"未輸入 id 值\"}");
 				
 			}catch (Exception e) {
 				System.out.println(e.getMessage());
 				// 回應一個 json 格式的錯誤資訊
-				resp.getWriter().println("{\"message\": \"" + e.getMessage() + "\"}");
+				ApiResponse<Ticket> apiResponse = new ApiResponse<Ticket>(false, null, e.getMessage());
+				resp.getWriter().println(gson.toJson(apiResponse));
+				
+				//resp.getWriter().println("{\"message\": \"" + e.getMessage() + "\"}");
 				
 			}
 			
