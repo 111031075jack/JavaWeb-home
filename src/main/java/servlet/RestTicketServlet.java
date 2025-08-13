@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.security.KeyStore.Entry;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -41,7 +42,7 @@ public class RestTicketServlet extends HttpServlet {
 			
 			List<Ticket> tickets = service.findAllTickets();
 			// 集合轉 json 陣列
-			ApiResponse<List<Ticket>> apiResponse = new ApiResponse<>(true, tickets, "");
+			ApiResponse<List<Ticket>> apiResponse = new ApiResponse<>(true, tickets, tickets.size() + "筆");
 			resp.getWriter().println(gson.toJson(apiResponse));
 			
 		}else { // 單筆查詢
@@ -61,7 +62,7 @@ public class RestTicketServlet extends HttpServlet {
 				
 				//System.out.println("未輸入 id 值");
 				// 回應一個 json 格式的錯誤資訊
-				resp.getWriter().println("{\"message\": \"未輸入 id 值\"}");
+				//resp.getWriter().println("{\"message\": \"未輸入 id 值\"}");
 				
 			}catch (Exception e) {
 				System.out.println(e.getMessage());
@@ -75,6 +76,56 @@ public class RestTicketServlet extends HttpServlet {
 			
 		}
 		
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ApiResponse<Ticket> apiResponse = null;
+		try {
+			// 得到 json 串流資料: req.getReader()
+			// 將 json 串流資料轉 Ticket 物件
+			Ticket ticket = gson.fromJson(req.getReader(), Ticket.class);
+			// 儲存
+			service.addTicket(ticket);
+			// 回應成功
+			apiResponse = new ApiResponse<Ticket>(true, ticket, "新增成功");
+		}catch (Exception e) {
+			// 回應失敗
+			apiResponse = new ApiResponse<Ticket>(false, null, "新增失敗: " + e.getMessage());
+		}
+		resp.getWriter().print(gson.toJson(apiResponse));
+		
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		//  /rest/ticket/1?price=35000
+		String pathInfo = req.getPathInfo();
+		ApiResponse<Ticket> apiResponse = null;
+		try {
+			int id = Integer.parseInt(pathInfo.substring(1));// 字首(位置 0 的地方) "/" 不要
+			int price = Integer.parseInt(req.getParameter("price"));
+			// 修改
+			service.updateTicketPrice(id, price);
+			apiResponse = new ApiResponse<>(true, null, "修改成功 ");
+		}catch (Exception e) {
+			apiResponse = new ApiResponse<>(false, null, "修改失敗: " + e.getMessage());
+		}
+		resp.getWriter().print(gson.toJson(apiResponse));
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String pathInfo = req.getPathInfo();
+		ApiResponse<Ticket> apiResponse = null;
+		try {
+			int id = Integer.parseInt(pathInfo.substring(1));// 字首(位置 0 的地方) "/" 不要
+			service.deleteTicket(id);
+			apiResponse = new ApiResponse<>(true, null, "刪除成功");
+		}catch (Exception e) {
+			apiResponse = new ApiResponse<>(false, null, "刪除失敗: " + e.getMessage());
+		}
+		resp.getWriter().print(gson.toJson(apiResponse));
 	}
 	
 }
