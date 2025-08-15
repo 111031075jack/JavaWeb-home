@@ -23,12 +23,16 @@ public class ChatServer {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		message = String.format("%8s %s 說: %s%n", sdf.format(new Date()), sessionId, message);
 		for(Session session : sessions) {
-			session.getAsyncRemote().sendText(message);
+			if(session.isOpen()) {
+				session.getAsyncRemote().sendText(message);
+					
+				}
+			}
 		}
-	}
 	
 	@OnOpen
 	public void onOpen(Session session) {
+		sessions.add(session);
 		String sessionId = session.getId();
 		System.out.printf("session id: %s 已連入%n", sessionId);
 		String message = String.format("%s 已進入聊天室%n", sessionId); 
@@ -45,6 +49,7 @@ public class ChatServer {
 	
 	@OnClose
 	public void onClose(Session session) {
+		sessions.remove(session);
 		String sessionId = session.getId();
 		System.out.printf("session id: %s 已關閉%n", sessionId);
 		String message = String.format("%s 已離開聊天室%n", sessionId); 
