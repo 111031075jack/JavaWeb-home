@@ -1,5 +1,10 @@
 package websocket;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
@@ -10,22 +15,40 @@ import jakarta.websocket.server.ServerEndpoint;
 @ServerEndpoint("/chatserver")
 public class ChatServer {
 	
+	// 建立一個 list<Session> 存放所有的連線資訊
+	private static List<Session> sessions = new CopyOnWriteArrayList<>();
+	
+	// 廣播
+	private void broadcast(String sessionId, String message) {
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		message = String.format("%8s %s 說: %s%n", sdf.format(new Date()), sessionId, message);
+		for(Session session : sessions) {
+			session.getAsyncRemote().sendText(message);
+		}
+	}
+	
 	@OnOpen
 	public void onOpen(Session session) {
 		String sessionId = session.getId();
 		System.out.printf("session id: %s 已連入%n", sessionId);
+		String message = String.format("%s 已進入聊天室%n", sessionId); 
+		broadcast(sessionId, message);
 	}
 	
 	@OnMessage
 	public void onMessage(Session session, String message) {
 		String sessionId = session.getId();
 		System.out.printf("session id: %s 說: %s%n", sessionId, message);
+		message = String.format("%s 說: %s%n", sessionId, message); 
+		broadcast(sessionId, message);
 	}
 	
 	@OnClose
 	public void onClose(Session session) {
 		String sessionId = session.getId();
 		System.out.printf("session id: %s 已關閉%n", sessionId);
+		String message = String.format("%s 已離開聊天室%n", sessionId); 
+		broadcast(sessionId, message);
 	}
 	
 	@OnError
