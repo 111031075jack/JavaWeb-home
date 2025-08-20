@@ -2,13 +2,16 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-			<meta charset="UTF-8">
-			<title>Chat Client</title>
+	<head>
+		<meta charset="UTF-8">
+		<title>Chat Client</title>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css">
 		<link rel="stylesheet" href="/JavaWeb/css/buttons.css">
 	</head>
 	<body style="padding: 20px">
+		<!-- menu -->
+		<%@include file="/WEB-INF/view/menu.jspf" %>
+		
 		<h1>我的聊天室</h1>
 		<div class="pure-form">
 			<fieldset>
@@ -18,17 +21,15 @@
 				<p />
 				<input type="text" id="messageInput" placeholder="請輸入訊息" />
 				<button type="button" id="onMessageButton" class="button-secondary pure-button">傳送</button>
-				
 			</fieldset>
 		</div>
 		<div class="pure-form">
 			<fieldset>聊天歷史紀錄</fieldset>
 			<div id="messageHistory"></div>
 		</div>
-		
 	</body>
 	<script type="text/javascript">
-		function startup(){
+		function startup() {
 			const onOpenButton = document.getElementById('onOpenButton');
 			const onCloseButton = document.getElementById('onCloseButton');
 			const messageInput = document.getElementById('messageInput');
@@ -44,7 +45,8 @@
 			
 			// 配置 WebSocket
 			function setWebSocket() {
-				const wsurl = 'ws://localhost:8080/JavaWeb/chatserver';
+				const wsurl = 'ws://' + window.location.host + '/JavaWeb/chatserver';
+				// 建立連線
 				webSocket = new WebSocket(wsurl);
 				
 				// 連線成功後會自動調用的函式
@@ -55,11 +57,10 @@
 					onMessageButton.disabled = false;
 				};
 				
-				// 接收來自 websocket server 的訊息後會自動調用的函式
+				// 接收來自 websocket server 的訊息會自動調用的函式
 				webSocket.onmessage = function(event) {
 					const message = event.data; // 接收來自 websocket server 的訊息
-					messageHistory.insertAdjacentHTML('afterbegin', message + '<br/>'); // 插入資料
-					
+					messageHistory.insertAdjacentHTML('afterbegin', message + '<br />'); // 插入資料
 				};
 				
 				// 離線成功後會自動調用的函式
@@ -71,29 +72,28 @@
 				};
 				
 				// 發生錯誤時會自動調用的函式
-				webSocket.onError = function(e){
+				webSocket.onerror = function(e) {
 					console.log(e);
 					alert(e);
-				}
-				
+				};
 			}
 			
 			// 按下 [連線] 按鈕
-			onOpenButton.addEventListener('click', function(){
+			onOpenButton.addEventListener('click', function() {
 				setWebSocket();
 			});
 			
 			// 按下 [離線] 按鈕
-			onCloseButton.addEventListener('click', function(){
-				webSocket.close(); // 離線
+			onCloseButton.addEventListener('click', function() {
+				webSocket.close(); // 離線關閉
 			});
 			
 			// 按下 [傳送] 按鈕
-			onMessageButton.addEventListener('click', function(){
+			onMessageButton.addEventListener('click', function() {
 				webSocket.send(messageInput.value);
 			});
 			
-		}	
+		}
 		
 		window.onload = startup;
 	</script>
